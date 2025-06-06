@@ -17,10 +17,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body { font-family: 'Poppins', sans-serif; overflow: hidden; background-color: #111827; }
+        /* === SCROLL FIX === */
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            /* overflow: hidden; ko hata diya hai taake scroll ho sake */
+            background-color: #111827; 
+        }
         .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; }
-        #entry-modal { transition: opacity 0.5s ease-out; }
-        #fireworks-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
+        #entry-modal { 
+            transition: opacity 0.5s ease-out; 
+            /* Isko 'fixed' kar diya hai taake yeh scroll se affect na ho */
+            position: fixed;
+        }
+        #fireworks-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; }
         .card-bg { 
             background-image: url('./box-bg.jpg'); 
             background-size: cover; background-position: center; position: relative; 
@@ -28,52 +37,59 @@
         .card-bg::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); border-radius: 1rem; z-index: 1; }
         .card-content { position: relative; z-index: 2; }
         .text-readable { color: #2c3e50; font-weight: 700; text-shadow: 0px 0px 4px rgba(255, 255, 255, 0.8), 0px 0px 8px rgba(255, 255, 255, 0.7); }
-        .ad-container { position: fixed; width: 100%; min-height: 50px; background-color: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; color: white; z-index: 100; left: 0; }
-        /* Upar wala ad space ka CSS hata diya gaya hai */
-        #bottom-ad-container { bottom: 0; }
-        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background-color: #2ecc71; color: white; padding: 12px 24px; border-radius: 50px; z-index: 200; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; }
+        
+        /* === AD CONTAINER FIX === */
+        #bottom-ad-container {
+            width: 100%;
+            min-height: 50px; /* Ad ki kam se kam height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem 0; /* Upar neeche thori jaga */
+        }
+        #toast { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: #2ecc71; color: white; padding: 12px 24px; border-radius: 50px; z-index: 200; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900">
     
-    <!-- === TOP ADSTERRA AD SPACE HATA DIYA GAYA HAI === -->
-
     <canvas id="fireworks-canvas"></canvas>
     <audio id="background-naat" src="./eid-bg.mp3" loop></audio>
 
-    <!-- Main Content Container - Padding adjust kar di gayi hai -->
-    <div id="main-content" class="relative z-10 flex items-center justify-center min-h-screen p-4 pt-12 pb-24 transition-opacity duration-1000 opacity-0">
-        <div class="w-full max-w-lg card-bg rounded-2xl shadow-2xl text-center overflow-hidden">
-            <div class="card-content p-6 sm:p-10">
-                <button id="play-pause-btn" class="absolute top-4 right-4 z-10 w-12 h-12 bg-green-600/70 text-white rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110">
-                    <i id="play-pause-icon" class="fas fa-play text-xl"></i>
-                </button>
-                <h1 class="font-urdu text-5xl md:text-6xl leading-tight text-readable">عید الاضحی مبارک!</h1>
-                <p id="wish-text" class="font-urdu mt-4 max-w-lg text-xl md:text-2xl min-h-[120px] text-readable"></p>
-                <p id="from-text" class="mt-8 text-lg font-semibold text-gray-100 font-sans" style="text-shadow: 1px 1px 3px #000;"></p>
-                <div class="mt-6" dir="ltr">
-                    <label for="name-input" class="block text-white text-sm font-bold mb-2">Apna Naam Likhein:</label>
-                    <input type="text" id="name-input" placeholder="Yahan naam likhein..." class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center">
+    <!-- Main Content Container - ab yeh page ka hissa hai, fix nahi -->
+    <div class="flex flex-col min-h-screen">
+        <div id="main-content" class="flex-grow flex items-center justify-center p-4 transition-opacity duration-1000 opacity-0">
+            <div class="w-full max-w-lg card-bg rounded-2xl shadow-2xl text-center overflow-hidden">
+                <div class="card-content p-6 sm:p-10">
+                    <button id="play-pause-btn" class="absolute top-4 right-4 z-10 w-12 h-12 bg-green-600/70 text-white rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+                        <i id="play-pause-icon" class="fas fa-play text-xl"></i>
+                    </button>
+                    <h1 class="font-urdu text-5xl md:text-6xl leading-tight text-readable">عید الاضحی مبارک!</h1>
+                    <p id="wish-text" class="font-urdu mt-4 max-w-lg text-xl md:text-2xl min-h-[120px] text-readable"></p>
+                    <p id="from-text" class="mt-8 text-lg font-semibold text-gray-100 font-sans" style="text-shadow: 1px 1px 3px #000;"></p>
+                    <div class="mt-6" dir="ltr">
+                        <label for="name-input" class="block text-white text-sm font-bold mb-2">Apna Naam Likhein:</label>
+                        <input type="text" id="name-input" placeholder="Yahan naam likhein..." class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center">
+                    </div>
+                    <button id="share-btn" class="mt-6 w-full inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg">
+                        Doston ko Share Karein <i class="fas fa-share-alt ml-2"></i>
+                    </button>
                 </div>
-                <button id="share-btn" class="mt-6 w-full inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg">
-                    Doston ko Share Karein <i class="fas fa-share-alt ml-2"></i>
-                </button>
             </div>
+        </div>
+        
+        <!-- BOTTOM ADSTERRA AD SPACE - Ab yeh content ke neeche aayega -->
+        <div id="bottom-ad-container">
+            <script async="async" data-cfasync="false" src="//pl26855403.profitableratecpm.com/3c44abbaeb10895addd2557c8486a982/invoke.js"></script>
+            <div id="container-3c44abbaeb10895addd2557c8486a982"></div>
         </div>
     </div>
 
-    <div id="entry-modal" class="absolute inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center cursor-pointer">
+    <!-- Entry Modal - ab yeh 'fixed' hai -->
+    <div id="entry-modal" class="inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center cursor-pointer">
         <div class="text-center text-white p-8">
             <h2 class="text-4xl font-bold font-urdu">عید کی خوشیاں</h2>
             <p class="mt-4 text-xl">داخل ہونے کے لیے کہیں بھی کلک کریں</p>
         </div>
-    </div>
-    
-    <!-- BOTTOM ADSTERRA AD SPACE -->
-    <div id="bottom-ad-container" class="ad-container">
-        <!-- === ADSTERRA AD CODE LAGA HUA HAI === -->
-        <script async="async" data-cfasync="false" src="//pl26855403.profitableratecpm.com/3c44abbaeb10895addd2557c8486a982/invoke.js"></script>
-        <div id="container-3c44abbaeb10895addd2557c8486a982"></div>
     </div>
     
     <div id="toast">Link Copied!</div>
