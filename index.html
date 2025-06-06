@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>عید الاضحی مبارک</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS for styling -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts -->
+    <!-- Google Fonts for Urdu and English text -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     
-    <!-- Font Awesome Icons -->
+    <!-- Font Awesome for the icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
         body { font-family: 'Poppins', sans-serif; overflow: hidden; background-color: #111827; }
         .font-urdu { font-family: 'Noto Nastaliq Urdu', serif; }
+        #entry-modal { transition: opacity 0.5s ease-out; }
         #fireworks-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .card-bg { background-image: url('box-bg.jpg'); background-size: cover; background-position: center; position: relative; }
         .card-bg::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); border-radius: 1rem; z-index: 1; }
@@ -27,7 +28,20 @@
         .ad-container { position: fixed; width: 100%; min-height: 50px; background-color: rgba(0, 0, 0, 0.7); display: flex; align-items: center; justify-content: center; color: white; z-index: 100; left: 0; }
         #top-ad-container { top: 0; }
         #bottom-ad-container { bottom: 0; }
-        #toast { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); background-color: #2ecc71; color: white; padding: 12px 24px; border-radius: 50px; z-index: 200; opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; }
+        #toast {
+            position: fixed;
+            bottom: 90px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #2ecc71;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            z-index: 200;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900">
@@ -41,7 +55,8 @@
     <canvas id="fireworks-canvas"></canvas>
     <audio id="background-naat" src="eid-bg.mp3" loop></audio>
 
-    <div id="main-content" class="relative z-10 flex items-center justify-center min-h-screen p-4 py-24">
+    <!-- Main Content Container (Shuru mein chupa hua hoga) -->
+    <div id="main-content" class="relative z-10 flex items-center justify-center min-h-screen p-4 py-24 transition-opacity duration-1000 opacity-0">
         <div class="w-full max-w-lg card-bg rounded-2xl shadow-2xl text-center overflow-hidden">
             <div class="card-content p-6 sm:p-10">
                 <button id="play-pause-btn" class="absolute top-4 right-4 z-10 w-12 h-12 bg-green-600/70 text-white rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110">
@@ -50,6 +65,7 @@
 
                 <h1 class="font-urdu text-5xl md:text-6xl leading-tight text-readable">عید الاضحی مبارک!</h1>
                 <p id="wish-text" class="font-urdu mt-4 max-w-lg text-xl md:text-2xl min-h-[120px] text-readable"></p>
+                
                 <p id="from-text" class="mt-8 text-lg font-semibold text-gray-100 font-sans" style="text-shadow: 1px 1px 3px #000;"></p>
                 
                 <div class="mt-6" dir="ltr">
@@ -63,6 +79,14 @@
             </div>
         </div>
     </div>
+
+    <!-- Entry Modal (Popup wapas aa gaya hai) -->
+    <div id="entry-modal" class="absolute inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center cursor-pointer">
+        <div class="text-center text-white p-8">
+            <h2 class="text-4xl font-bold font-urdu">عید کی خوشیاں</h2>
+            <p class="mt-4 text-xl">داخل ہونے کے لیے کہیں بھی کلک کریں</p>
+        </div>
+    </div>
     
     <!-- BOTTOM ADSTERRA AD SPACE -->
     <div id="bottom-ad-container" class="ad-container">
@@ -74,7 +98,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // Elements
+            const entryModal = document.getElementById('entry-modal');
+            const mainContent = document.getElementById('main-content');
             const fromText = document.getElementById('from-text');
             const wishText = document.getElementById('wish-text');
             const naatAudio = document.getElementById('background-naat');
@@ -84,14 +109,9 @@
             const shareBtn = document.getElementById('share-btn');
             const toast = document.getElementById('toast');
 
-            // Fireworks foran start ho jayenge
-            startFireworks();
-
-            // Wishes
             const wishes = [ "آپ کی قربانیاں قبول ہوں اور آپ کی زندگی برکتوں سے بھر جائے۔", "اللہ آپ کو اور آپ کے خاندان کو اس عید پر خوشیوں سے نوازے۔", "عید الاضحیٰ کی خوشیاں آپ کی زندگی میں امن اور خوشحالی لائیں۔", "اس مبارک دن پر آپ کی تمام دعائیں قبول ہوں۔ عید مبارک!", "دل کی گہرائیوں سے آپ کو اور آپ کے پیاروں کو عید مبارک۔", "اللہ آپ کی قربانی کو شرف قبولیت عطا فرمائے۔", "اللہ تعالیٰ آپ کو اور آپ کے خاندان کو خوشیوں بھری عید عطا فرمائے۔", "رب کریم آپ کے رزق، صحت، اور ایمان میں برکت عطا فرمائے۔", "آپ کی زندگی ایمان، سلامتی اور سکون سے بھر جائے۔" ];
             wishText.textContent = wishes[Math.floor(Math.random() * wishes.length)];
 
-            // Link se naam hasil karna
             const urlParams = new URLSearchParams(window.location.search);
             const senderName = urlParams.get('name');
             if (senderName) {
@@ -100,12 +120,22 @@
                 fromText.style.display = 'none';
             }
             
-            // === MUSIC FIX ===
-            // Naat ab sirf is button ke click karne par hi chalegi
+            // Entry Modal Logic (Yeh Naat ko autoplay karne mein madad dega)
+            entryModal.addEventListener('click', () => {
+                entryModal.style.opacity = '0';
+                mainContent.style.opacity = '1';
+                
+                naatAudio.play().catch(e => console.log("Autoplay rok diya gaya, user play button click karega"));
+                playPauseIcon.classList.replace('fa-play', 'fa-pause');
+
+                startFireworks();
+                setTimeout(() => { entryModal.style.display = 'none'; }, 500);
+            }, { once: true });
+            
+            // Play/Pause Button
             playPauseBtn.addEventListener('click', () => {
-                // Check karein ke audio context user interaction ke liye tayyar hai ya nahi
                 if (naatAudio.paused) {
-                    naatAudio.play().catch(error => console.error("Audio play nahi ho saka:", error));
+                    naatAudio.play();
                     playPauseIcon.classList.replace('fa-play', 'fa-pause');
                 } else {
                     naatAudio.pause();
@@ -118,13 +148,11 @@
                 const userName = nameInput.value.trim() || 'Aapka Ek Dost';
                 const baseUrl = window.location.origin + window.location.pathname;
                 const shareUrl = `${baseUrl}?name=${encodeURIComponent(userName)}`;
-
                 const shareData = {
                     title: 'Eid Mubarak!',
                     text: `🌙✨ ${userName} ki taraf se aapko Eid Mubarak! ✨🐑\n\nYeh khubsurat paigham dekhein:`,
                     url: shareUrl
                 };
-
                 if (navigator.share) {
                     try {
                         await navigator.share(shareData);
