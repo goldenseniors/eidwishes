@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عید الاضحی مبارک</title>
+    
+    <!-- Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts for Urdu and English text -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for the icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Custom styles */
+        body {
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden;
+            background-color: #111827;
+        }
+        .font-urdu {
+            font-family: 'Noto Nastaliq Urdu', serif;
+        }
+        #entry-modal {
+            transition: opacity 0.5s ease-out;
+        }
+        #fireworks-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .card-bg {
+             background-image: url('box-bg.jpg');
+             background-size: cover;
+             background-position: center;
+             position: relative;
+        }
+        .card-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 1rem;
+            z-index: 1;
+        }
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+        .text-readable {
+            color: #2c3e50;
+            font-weight: 700;
+            text-shadow: 0px 0px 4px rgba(255, 255, 255, 0.8), 0px 0px 8px rgba(255, 255, 255, 0.7);
+        }
+        
+        /* Ad container styles */
+        .ad-container {
+            position: fixed;
+            width: 100%;
+            min-height: 50px;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            z-index: 100;
+            left: 0;
+        }
+        #top-ad-container {
+            top: 0;
+        }
+        #bottom-ad-container {
+            bottom: 0;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900">
+    
+    <!-- TOP ADSTERRA AD SPACE -->
+    <div id="top-ad-container" class="ad-container">
+        <!-- YAHAN APNA TOP ADSTERRA KA AD CODE PASTE KAREIN -->
+        <span class="text-xs">Advertisement Area (Top)</span>
+    </div>
+
+    <!-- Fireworks Canvas -->
+    <canvas id="fireworks-canvas"></canvas>
+    
+    <!-- === NAAT AUDIO FILE === -->
+    <audio id="background-naat" src="eid-bg.mp3" loop></audio>
+
+    <!-- Main Content Container -->
+    <div id="main-content" class="relative z-10 flex items-center justify-center min-h-screen p-4 py-24 transition-opacity duration-1000 opacity-0">
+        
+        <!-- Card -->
+        <div class="w-full max-w-lg card-bg rounded-2xl shadow-2xl text-center overflow-hidden">
+            <div class="card-content p-6 sm:p-10">
+
+                <!-- === PLAY/PAUSE BUTTON === -->
+                <div class="absolute top-4 right-4 z-10">
+                    <button id="play-pause-btn" class="w-12 h-12 bg-green-600/70 text-white rounded-full flex items-center justify-center shadow-lg transition-transform hover:scale-110">
+                        <i id="play-pause-icon" class="fas fa-play text-xl"></i>
+                    </button>
+                </div>
+
+                <h1 class="font-urdu text-5xl md:text-6xl leading-tight text-readable">عید الاضحی مبارک!</h1>
+                
+                <p id="wish-text" class="font-urdu mt-4 max-w-lg text-xl md:text-2xl min-h-[120px] text-readable">
+                     <!-- Wishes yahan JavaScript se aayengi -->
+                </p>
+                
+                <p id="from-text" class="mt-8 text-lg font-semibold text-gray-100 font-sans" style="text-shadow: 1px 1px 3px #000;">From Your Loved One</p>
+                
+                <!-- Share Button -->
+                <a id="whatsapp-share" href="#" class="mt-8 inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg">
+                    Share This Wish <i class="fab fa-whatsapp ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Entry Modal -->
+    <div id="entry-modal" class="absolute inset-0 z-50 bg-black bg-opacity-80 flex items-center justify-center cursor-pointer">
+        <div class="text-center text-white p-8">
+            <h2 class="text-4xl font-bold font-urdu">عید کی خوشیاں</h2>
+            <p class="mt-4 text-xl">داخل ہونے کے لیے کہیں بھی کلک کریں</p>
+        </div>
+    </div>
+    
+    <!-- BOTTOM ADSTERRA AD SPACE -->
+    <div id="bottom-ad-container" class="ad-container">
+        <!-- YAHAN APNA BOTTOM ADSTERRA KA AD CODE PASTE KAREIN -->
+        <span class="text-xs">Advertisement Area (Bottom)</span>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const entryModal = document.getElementById('entry-modal');
+            const mainContent = document.getElementById('main-content');
+            const fromText = document.getElementById('from-text');
+            const whatsappShare = document.getElementById('whatsapp-share');
+            const wishText = document.getElementById('wish-text');
+            // === NAAT PLAYER ELEMENTS ===
+            const naatAudio = document.getElementById('background-naat');
+            const playPauseBtn = document.getElementById('play-pause-btn');
+            const playPauseIcon = document.getElementById('play-pause-icon');
+
+            // Wishes
+            const wishes = [
+                "آپ کی قربانیاں قبول ہوں اور آپ کی زندگی برکتوں سے بھر جائے۔", "اللہ آپ کو اور آپ کے خاندان کو اس عید پر خوشیوں سے نوازے۔", "عید الاضحیٰ کی خوشیاں آپ کی زندگی میں امن اور خوشحالی لائیں۔", "اس مبارک دن پر آپ کی تمام دعائیں قبول ہوں۔ عید مبارک!", "دل کی گہرائیوں سے آپ کو اور آپ کے پیاروں کو عید مبارک۔", "اللہ آپ کی قربانی کو شرف قبولیت عطا فرمائے۔", "اللہ تعالیٰ آپ کو اور آپ کے خاندان کو خوشیوں بھری عید عطا فرمائے۔", "رب کریم آپ کے رزق، صحت، اور ایمان میں برکت عطا فرمائے۔", "آپ کی زندگی ایمان، سلامتی اور سکون سے بھر جائے۔"
+            ];
+            wishText.textContent = wishes[Math.floor(Math.random() * wishes.length)];
+
+            // URL Params
+            const urlParams = new URLSearchParams(window.location.search);
+            const senderName = urlParams.get('name');
+            if (senderName) {
+                fromText.textContent = `From: ${senderName.replace(/</g, "&lt;").replace(/>/g, "&gt;")}`;
+            }
+            
+            // Share Message
+            const pageUrl = window.location.href;
+            const shareMessage = encodeURIComponent(`🌙✨ عید الاضحی مبارک ✨🐑\n\n${wishText.textContent}\n\nMeri taraf se aapko yeh khubsurat paigham:\n\n${pageUrl}`);
+            whatsappShare.href = `https://api.whatsapp.com/send?text=${shareMessage}`;
+
+            // Entry Modal
+            entryModal.addEventListener('click', () => {
+                entryModal.style.opacity = '0';
+                mainContent.style.opacity = '1';
+
+                // === NAAT CHALAYEIN ===
+                naatAudio.play().then(() => {
+                    playPauseIcon.classList.remove('fa-play');
+                    playPauseIcon.classList.add('fa-pause');
+                }).catch(error => {
+                    console.log("Autoplay was prevented by browser. User must click play button.");
+                });
+
+                startFireworks();
+                setTimeout(() => {
+                    entryModal.style.display = 'none';
+                }, 500);
+            }, { once: true });
+            
+            // === PLAY/PAUSE BUTTON LOGIC ===
+            playPauseBtn.addEventListener('click', () => {
+                if (naatAudio.paused) {
+                    naatAudio.play();
+                    playPauseIcon.classList.remove('fa-play');
+                    playPauseIcon.classList.add('fa-pause');
+                } else {
+                    naatAudio.pause();
+                    playPauseIcon.classList.remove('fa-pause');
+                    playPauseIcon.classList.add('fa-play');
+                }
+            });
+
+            // Fireworks (code unchanged)
+            const canvas = document.getElementById('fireworks-canvas');
+            const ctx = canvas.getContext('2d');
+            let fireworks = [];
+            let particles = [];
+            function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+            window.addEventListener('resize', resizeCanvas);
+            resizeCanvas();
+            function Firework(sx, sy, tx, ty) { this.x = sx; this.y = sy; this.sx = sx; this.sy = sy; this.tx = tx; this.ty = ty; this.distanceToTarget = Math.hypot(tx - sx, ty - sy); this.distanceTraveled = 0; this.coordinates = Array(3).fill([this.x, this.y]); this.angle = Math.atan2(ty - sy, tx - sx); this.speed = 2; this.acceleration = 1.05; this.brightness = Math.random() * 50 + 50; }
+            Firework.prototype.update = function(index) { this.coordinates.pop(); this.coordinates.unshift([this.x, this.y]); this.speed *= this.acceleration; this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed; this.distanceTraveled = Math.hypot(this.x - this.sx, this.y - this.sy); if (this.distanceTraveled >= this.distanceToTarget) { createParticles(this.tx, this.ty); fireworks.splice(index, 1); } };
+            Firework.prototype.draw = function() { ctx.beginPath(); ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]); ctx.lineTo(this.x, this.y); ctx.strokeStyle = `hsl(${Math.random() * 360}, 100%, ${this.brightness}%)`; ctx.stroke(); };
+            function Particle(x, y) { this.x = x; this.y = y; this.coordinates = Array(5).fill([this.x, this.y]); this.angle = Math.random() * Math.PI * 2; this.speed = Math.random() * 10 + 2; this.friction = 0.95; this.gravity = 1.5; this.hue = Math.random() * 360; this.brightness = Math.random() * 50 + 50; this.alpha = 1; this.decay = Math.random() * 0.03 + 0.015; }
+            Particle.prototype.update = function(index) { this.coordinates.pop(); this.coordinates.unshift([this.x, this.y]); this.speed *= this.friction; this.x += Math.cos(this.angle) * this.speed; this.y += Math.sin(this.angle) * this.speed + this.gravity; this.alpha -= this.decay; if (this.alpha <= this.decay) { particles.splice(index, 1); } };
+            Particle.prototype.draw = function() { ctx.beginPath(); ctx.moveTo(this.coordinates[this.coordinates.length - 1][0], this.coordinates[this.coordinates.length - 1][1]); ctx.lineTo(this.x, this.y); ctx.strokeStyle = `hsla(${this.hue}, 100%, ${this.brightness}%, ${this.alpha})`; ctx.stroke(); };
+            function createParticles(x, y) { let particleCount = 80; while (particleCount--) { particles.push(new Particle(x, y)); } }
+            function startFireworks() { function loop() { requestAnimationFrame(loop); ctx.globalCompositeOperation = 'destination-out'; ctx.fillStyle = 'rgba(0, 0, 0, 0.4)'; ctx.fillRect(0, 0, canvas.width, canvas.height); ctx.globalCompositeOperation = 'lighter'; for(let i = fireworks.length - 1; i >= 0; i--) fireworks[i].update(i); for(let j = particles.length - 1; j >= 0; j--) particles[j].update(j); for(let i = fireworks.length - 1; i >= 0; i--) fireworks[i].draw(); for(let j = particles.length - 1; j >= 0; j--) particles[j].draw(); } setInterval(() => { if (fireworks.length < 15) { fireworks.push(new Firework(canvas.width / 2, canvas.height, Math.random() * canvas.width, Math.random() * canvas.height / 2)); } }, 500); loop(); }
+        });
+    </script>
+</body>
+</html>
