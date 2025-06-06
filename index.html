@@ -22,7 +22,6 @@
         #entry-modal { transition: opacity 0.5s ease-out; }
         #fireworks-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; }
         .card-bg { 
-            /* === PATH FIX === */
             background-image: url('./box-bg.jpg'); 
             background-size: cover; background-position: center; position: relative; 
         }
@@ -44,7 +43,6 @@
     </div>
 
     <canvas id="fireworks-canvas"></canvas>
-    <!-- === PATH FIX === -->
     <audio id="background-naat" src="./eid-bg.mp3" loop></audio>
 
     <div id="main-content" class="relative z-10 flex items-center justify-center min-h-screen p-4 py-24 transition-opacity duration-1000 opacity-0">
@@ -123,11 +121,17 @@
                 const userName = nameInput.value.trim() || 'Aapka Ek Dost';
                 const baseUrl = window.location.origin + window.location.pathname;
                 const shareUrl = `${baseUrl}?name=${encodeURIComponent(userName)}`;
+
+                // === SHARE TEXT FIX ===
+                // Ab share wala message page par nazar aane wali random dua ko bhi shamil karega
+                const shareText = `🌙✨ ${userName} ki taraf se aapko Eid Mubarak! ✨🐑\n\n${wishText.textContent}\n\nMeri taraf se aapko yeh khubsurat paigham:`;
+                
                 const shareData = {
                     title: 'Eid Mubarak!',
-                    text: `🌙✨ ${userName} ki taraf se aapko Eid Mubarak! ✨🐑\n\nYeh khubsurat paigham dekhein:`,
+                    text: shareText,
                     url: shareUrl
                 };
+
                 if (navigator.share) {
                     try {
                         await navigator.share(shareData);
@@ -135,7 +139,7 @@
                         console.error('Share failed:', err);
                     }
                 } else {
-                    navigator.clipboard.writeText(shareUrl).then(() => {
+                    navigator.clipboard.writeText(`${shareText}\n\n${shareUrl}`).then(() => {
                         toast.style.opacity = '1';
                         setTimeout(() => { toast.style.opacity = '0'; }, 2000);
                     }).catch(err => {
@@ -148,24 +152,3 @@
     </script>
 </body>
 </html>
-```
-
----
-
-### **Step 2: Is Code ko GitHub par Update Karein**
-
-1.  GitHub par apni `index.html` file ko **Edit** karein (pencil ke icon par click karke).
-2.  Saara purana code `Ctrl + A` daba kar select karein aur `Delete` kar dein.
-3.  Upar wala naya code copy karke wahan `Ctrl + V` se paste karein.
-4.  **`Commit changes`** par click karein.
-
----
-
-### **Step 3: Sab se Zaroori - Browser ki Cache Clear Karein**
-
-Jab aapki file GitHub par update ho jaye (1-2 minute baad), toh apni website ka link kholein aur **Hard Refresh** karein.
-
-* **Computer par:** Apne keyboard par **`Ctrl` + `Shift` + `R`** ek saath dabayein. (Agar Mac hai to `Cmd + Shift + R`).
-* **Mobile par:** Browser ki settings mein jaakar "Clear browsing data" ya "Clear cache" ka option istemal karein.
-
-Yeh karne se browser purani, tooti hui file ko bhool jayega aur internet se nayi, theek file download karega, aur Insha'Allah aapki website bilkul sahi kaam karne lage
