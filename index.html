@@ -72,9 +72,11 @@
         </div>
     </div>
     
-    <div id="bottom-ad-container" class="ad-container">
+    <div id="bottom-ad-container" class="ad-container relative">
         <!-- YAHAN APNA BOTTOM ADSTERRA KA AD CODE PASTE KAREIN -->
         <span class="text-xs">Advertisement Area (Bottom)</span>
+        <!-- VERSION NUMBER FOR DEBUGGING -->
+        <span class="absolute right-1 bottom-0 text-gray-600 text-[8px]">v1.2</span>
     </div>
     
     <div id="toast">Link Copied!</div>
@@ -121,17 +123,12 @@
                 const userName = nameInput.value.trim() || 'Aapka Ek Dost';
                 const baseUrl = window.location.origin + window.location.pathname;
                 const shareUrl = `${baseUrl}?name=${encodeURIComponent(userName)}`;
-
-                // === SHARE TEXT FIX ===
-                // Ab share wala message page par nazar aane wali random dua ko bhi shamil karega
                 const shareText = `🌙✨ ${userName} ki taraf se aapko Eid Mubarak! ✨🐑\n\n${wishText.textContent}\n\nMeri taraf se aapko yeh khubsurat paigham:`;
-                
                 const shareData = {
                     title: 'Eid Mubarak!',
                     text: shareText,
                     url: shareUrl
                 };
-
                 if (navigator.share) {
                     try {
                         await navigator.share(shareData);
@@ -152,3 +149,17 @@
     </script>
 </body>
 </html>
+```
+---
+
+### **Step 2: Ab Sakhti se Cache Clear Karein**
+
+1.  Upar diye gaye code ko GitHub par update kar dein aur 2 minute intezar karein.
+2.  Apne computer par **doosra browser** kholein. Misal ke taur par, agar aap hamesha Chrome istemal karte hain, to is baar **Microsoft Edge** ya **Firefox** kholein.
+3.  Is naye browser mein apni website ka link paste karke open karein.
+4.  Ab check karein.
+
+**Mujhe batayein:**
+Jab aap naye browser mein website kholte hain, to kya aapko neeche wale ad banner mein dayen (right) kone par chota sa **`v1.2`** likha nazar aa raha hai?
+
+Agar `v1.2` nazar aa raha hai, to iska matlab hai ke aapke paas bilkul naya code chal raha hai, aur ab share wala message 100% theek kaam kare
