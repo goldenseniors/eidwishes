@@ -37,16 +37,13 @@
             position: fixed;
         }
         
-        /* === FIREWORKS LAYER FIX === */
         #fireworks-canvas { 
             position: fixed; 
             top: 0; 
             left: 0; 
             width: 100%; 
             height: 100%; 
-            /* z-index ko positive kar diya hai taake yeh sab ke upar aaye */
             z-index: 99; 
-            /* Is se canvas ke upar click nahi hoga aur neeche wale buttons kaam karenge */
             pointer-events: none; 
         }
 
@@ -65,7 +62,6 @@
             align-items: center;
             justify-content: center;
             padding: 1rem 0;
-            /* Ad container ka z-index set kar diya taake yeh fireworks ke neeche rahe */
             position: relative;
             z-index: 50;
         }
@@ -87,11 +83,18 @@
                     <h1 class="font-urdu text-5xl md:text-6xl leading-tight text-readable">عید الاضحی مبارک!</h1>
                     <p id="wish-text" class="font-urdu mt-4 max-w-lg text-xl md:text-2xl min-h-[120px] text-readable"></p>
                     <p id="from-text" class="mt-8 text-lg font-semibold text-gray-100 font-sans" style="text-shadow: 1px 1px 3px #000;"></p>
+                    
                     <div class="mt-6" dir="ltr">
                         <label for="name-input" class="block text-white text-sm font-bold mb-2">Apna Naam Likhein:</label>
                         <input type="text" id="name-input" placeholder="Yahan naam likhein..." class="shadow appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline text-center">
                     </div>
-                    <button id="share-btn" class="mt-6 w-full inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg">
+
+                    <!-- === DIRECT LINK BUTTON === -->
+                    <a href="YAHAN APNA DIRECT LINK PASTE KAREIN" target="_blank" class="mt-6 w-full inline-block bg-pink-600 hover:bg-pink-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg animate-pulse">
+                        <i class="fas fa-gift mr-2"></i> Surprise Gift!
+                    </a>
+
+                    <button id="share-btn" class="mt-4 w-full inline-block bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg transition-transform transform hover:scale-105 shadow-lg">
                         Doston ko Share Karein <i class="fas fa-share-alt ml-2"></i>
                     </button>
                 </div>
